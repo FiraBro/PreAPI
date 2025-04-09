@@ -38,10 +38,14 @@ const userSchema = new mongoose.Schema({
       message: "Please provide a valid email",
     },
   },
+  // cartData: {
+  //   type: Map,
+  //   of: Number,
+  //   default: new Map(),
+  // },
   cartData: {
-    type: Map,
-    of: Number,
-    default: new Map(),
+    type: Object,
+    default: {},
   },
   passwordResetToken: String,
   passwordResetExpires: Date,
