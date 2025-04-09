@@ -1,7 +1,7 @@
 const app = require("./app");
 const mongoose = require("mongoose");
 // const data = require("../Backend/dev-data/data");
-const port = 3000;
+const port = 5000;
 
 mongoose
   .connect("mongodb://localhost:27017/Ecommerce")
