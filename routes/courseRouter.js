@@ -1,7 +1,7 @@
 const express = require("express");
 const courseRoutes = express.Router();
-const courseController = require("../controller/courseController");
-const authController = require("../controller/authController");
+const courseController = require("../controllers/courseController");
+const authController = require("../controllers/authController");
 const multer = require("multer");
 const path = require("path");
 // http://localhost:3000/uploads/courses/filename
