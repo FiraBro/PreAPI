@@ -1,7 +1,7 @@
 const express = require("express");
 const router = express.Router();
-const cartController = require("../controller/cartController");
-const authController = require("../controller/authController");
+const cartController = require("../controllers/cartController");
+const authController = require("../controllers/authController");
 
 // Protect all routes (user must be logged in)
 router.use(authController.protect);
