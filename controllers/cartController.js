@@ -1,4 +1,4 @@
-const User = require("../model/user");
+const User = require("../models/users");
 
 // Add Product to Cart
 exports.addToCart = async (req, res, next) => {
@@ -52,10 +52,11 @@ exports.addToCart = async (req, res, next) => {
 };
 
 // Remove Product from Cart
+
 exports.removeFromCart = async (req, res, next) => {
   try {
-    const { productId } = req.body;
-    const userId = req.user._id; // Get user ID from the authenticated request
+    const { productId, quantityToRemove = 1 } = req.body;
+    const userId = req.user._id;
 
     if (!productId) {
       return res.status(400).json({
@@ -64,7 +65,6 @@ exports.removeFromCart = async (req, res, next) => {
       });
     }
 
-    // Find the user
     const user = await User.findById(userId);
     if (!user) {
       return res.status(404).json({
@@ -73,7 +73,6 @@ exports.removeFromCart = async (req, res, next) => {
       });
     }
 
-    // Check if the product exists in the cart
     if (!user.cartData || !user.cartData[productId]) {
       return res.status(404).json({
         status: "fail",
@@ -81,22 +80,35 @@ exports.removeFromCart = async (req, res, next) => {
       });
     }
 
-    // Remove the product from the cart
-    delete user.cartData[productId];
+    user.cartData[productId] -= quantityToRemove;
 
-    // Save the updated cart without validating
-    await user.save({ validateBeforeSave: false });
+    if (user.cartData[productId] <= 0) {
+      delete user.cartData[productId];
+    }
+
+    // Mark cartData as modified to ensure changes are saved
+    user.markModified("cartData");
+
+    try {
+      await user.save({ validateBeforeSave: false });
+    } catch (error) {
+      console.error("Error saving user:", error);
+      return res.status(500).json({
+        status: "fail",
+        message: "Failed to update cart",
+      });
+    }
 
     res.status(200).json({
       status: "success",
-      message: "Product removed from cart",
+      message: "Product quantity updated in cart",
       cart: user.cartData,
     });
   } catch (error) {
     console.error(error);
     res.status(500).json({
       status: "fail",
-      message: "Failed to remove product from cart",
+      message: "Failed to update product quantity in cart",
     });
   }
 };
