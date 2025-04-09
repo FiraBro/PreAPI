@@ -42,10 +42,6 @@ const courseSchema = new mongoose.Schema({
     type: Date,
     default: Date.now,
   },
-  cartData: {
-    type: Object,
-    default: {},
-  },
 });
 
 const Course = mongoose.model("Course", courseSchema);
